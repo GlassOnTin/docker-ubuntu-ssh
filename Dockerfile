@@ -1,20 +1,25 @@
 FROM ubuntu:latest
 LABEL maintainer="Your Name <your.email@example.com>"
 
-# Accept a build argument for the root password
-ARG ROOT_PASSWORD
+# Update package lists and upgrade packages
+RUN apt-get update -y && apt-get upgrade -y
 
-# Update the system and install packages
-RUN apt-get update && \
-    apt-get install -y sudo curl git-core gnupg linuxbrew-wrapper locales nodejs zsh wget nano nodejs npm fonts-powerline python3 python3-pip openssh-server && \
-    pip3 install docker Flask celery pyjwt && \
-    npm install -g express socket.io winston && \
-    locale-gen en_US.UTF-8 && \
+# Install basic packages
+RUN apt-get install -y sudo curl git-core gnupg 
+
+# Install development tools
+RUN apt-get install -y linuxbrew-wrapper locales nodejs zsh wget nano python3 python3-pip openssh-server
+
+# Install Python packages
+RUN pip3 install docker Flask celery pyjwt
+
+# Install Node.js packages
+RUN npm install -g express socket.io winston
+
+# Configure locale and add user
+RUN locale-gen en_US.UTF-8 && \
     adduser --quiet --disabled-password --shell /bin/zsh --home /home/devuser --gecos "User" devuser && \
     echo "devuser:p@ssword1" | chpasswd &&  usermod -aG sudo devuser
-
-# Set the root password using the build argument
-RUN echo "root:${ROOT_PASSWORD}" | chpasswd
 
 # Set up SSH
 RUN mkdir /var/run/sshd && \
