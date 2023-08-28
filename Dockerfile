@@ -1,6 +1,9 @@
 FROM ubuntu:latest
 LABEL maintainer="Your Name <your.email@example.com>"
 
+# Accept a build argument for the root password
+ARG ROOT_PASSWORD
+
 # Update the system and install packages
 RUN apt-get update && \
     apt-get install -y sudo curl git-core gnupg linuxbrew-wrapper locales nodejs zsh wget nano nodejs npm fonts-powerline python3 python3-pip openssh-server && \
@@ -9,6 +12,9 @@ RUN apt-get update && \
     locale-gen en_US.UTF-8 && \
     adduser --quiet --disabled-password --shell /bin/zsh --home /home/devuser --gecos "User" devuser && \
     echo "devuser:p@ssword1" | chpasswd &&  usermod -aG sudo devuser
+
+# Set the root password using the build argument
+RUN echo "root:${ROOT_PASSWORD}" | chpasswd
 
 # Set up SSH
 RUN mkdir /var/run/sshd && \
