@@ -2,7 +2,7 @@ services:
   - type: web
     name: chatgpt-docker-plugin
     runtime: docker
-    repo: https://github.com/GlassOnTin/docker-ubuntu-ssh/tree/master
+    repo: https://github.com/GlassOnTin/docker-ubuntu-ssh
     envVars:
       - key: SSH_PORT
         value: "22"
