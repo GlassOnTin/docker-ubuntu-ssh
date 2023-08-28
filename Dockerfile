@@ -9,6 +9,7 @@ RUN apt-get install -y sudo curl git-core gnupg
 
 # Install development tools one by one to isolate issues
 RUN apt-get install -y locales
+RUN apt-get install -y npm
 RUN apt-get install -y nodejs
 RUN apt-get install -y zsh
 RUN apt-get install -y wget
@@ -16,6 +17,7 @@ RUN apt-get install -y nano
 RUN apt-get install -y python3
 RUN apt-get install -y python3-pip
 RUN apt-get install -y openssh-server
+RUN apt-get clean
 
 # Install Python packages
 RUN pip3 install docker Flask celery pyjwt
