@@ -7,8 +7,16 @@ RUN apt-get update -y && apt-get upgrade -y
 # Install basic packages
 RUN apt-get install -y sudo curl git-core gnupg 
 
-# Install development tools
-RUN apt-get install -y linuxbrew-wrapper locales nodejs zsh wget nano python3 python3-pip openssh-server
+# Install development tools one by one to isolate issues
+RUN apt-get install -y linuxbrew-wrapper
+RUN apt-get install -y locales
+RUN apt-get install -y nodejs
+RUN apt-get install -y zsh
+RUN apt-get install -y wget
+RUN apt-get install -y nano
+RUN apt-get install -y python3
+RUN apt-get install -y python3-pip
+RUN apt-get install -y openssh-server
 
 # Install Python packages
 RUN pip3 install docker Flask celery pyjwt
