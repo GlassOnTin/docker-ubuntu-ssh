@@ -1,0 +1,18 @@
+services:
+- type: web
+  name: chatgpt-docker-plugin
+  env: docker
+  repo: https://github.com/your-github-account/your-repo.git
+  envVars:
+    - key: SSH_PORT
+      value: "22"
+    - key: API_PORT
+      value: "3000"
+  build:
+    args:
+      - key: ROOT_PASSWORD
+        value: your_root_password
+  disk:
+    name: chatgpt-data
+    mountPath: /home/devuser
+    sizeGB: 1
