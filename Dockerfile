@@ -8,7 +8,6 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y sudo curl git-core gnupg 
 
 # Install development tools one by one to isolate issues
-RUN apt-get install -y linuxbrew-wrapper
 RUN apt-get install -y locales
 RUN apt-get install -y nodejs
 RUN apt-get install -y zsh
