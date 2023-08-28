@@ -35,6 +35,8 @@ RUN mkdir /var/run/sshd && \
     sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
+RUN ssh-keygen -A
+
 # Add custom scripts
 ADD scripts/installthemes.sh /home/devuser/installthemes.sh
 
