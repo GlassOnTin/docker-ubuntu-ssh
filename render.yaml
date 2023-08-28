@@ -8,10 +8,6 @@ services:
         value: "22"
       - key: API_PORT
         value: "3000"
-    build:
-      args:
-        - key: ROOT_PASSWORD
-          generateValue: true
     disk:
       name: chatgpt-data
       mountPath: /home/devuser
