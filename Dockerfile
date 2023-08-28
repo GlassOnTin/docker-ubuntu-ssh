@@ -48,8 +48,14 @@ ENV ZSH_THEME agnoster
 # Reset user to root for SSHD
 USER root
 
-# Expose SSH port and a custom port for our API
-EXPOSE 22 3000
+# Install Flask
+RUN pip3 install Flask
 
-# Run SSH and Zsh
-CMD ["/usr/sbin/sshd", "-D"]
+# Add a simple Flask app for health checks
+RUN echo 'from flask import Flask\napp = Flask(__name__)\n@app.route("/")\ndef hello():\n    return "OK", 200\nif __name__ == "__main__":\n    app.run(host="0.0.0.0", port=4000)' > /home/devuser/health_check.py
+
+# Expose the Flask app port along with SSH port
+EXPOSE 22 3000 4000
+
+# Run SSH and Flask app
+CMD ["/bin/bash", "-c", "/usr/sbin/sshd -D & python3 /home/devuser/health_check.py"]
