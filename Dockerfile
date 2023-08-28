@@ -35,15 +35,8 @@ RUN mkdir /var/run/sshd && \
     sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
-RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
-RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
-RUN ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
 RUN ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key
-RUN echo 'HostKey /etc/ssh/ssh_host_rsa_key' >> /etc/ssh/sshd_config
-RUN echo 'HostKey /etc/ssh/ssh_host_dsa_key' >> /etc/ssh/sshd_config
-RUN echo 'HostKey /etc/ssh/ssh_host_ecdsa_key' >> /etc/ssh/sshd_config
 RUN echo 'HostKey /etc/ssh/ssh_host_ed25519_key' >> /etc/ssh/sshd_config
-
 
 # Add custom scripts
 ADD scripts/installthemes.sh /home/devuser/installthemes.sh
@@ -55,9 +48,11 @@ USER devuser
 ENV TERM xterm
 ENV ZSH_THEME agnoster
 
+# Reset user to root for SSHD
+USER root
+
 # Expose SSH port and a custom port for our API
 EXPOSE 22 3000
 
 # Run SSH and Zsh
-CMD ["/usr/sbin/sshd", "-h", "/etc/ssh/ssh_host_rsa_key", "-D"]
-
+CMD ["/usr/sbin/sshd", "-D"]
