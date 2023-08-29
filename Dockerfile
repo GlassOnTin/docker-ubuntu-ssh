@@ -51,11 +51,15 @@ USER root
 # Install Flask
 RUN pip3 install Flask
 
+# Set the working directory
+WORKDIR /home/devuser
+
 # Copy the health_check script into the image
-COPY health_check.py /home/devuser/health_check.py
+COPY ./health_check.py /home/devuser/health_check.py
 
 # Expose the Flask app port along with SSH port
 EXPOSE 22 3000 4000
 
 # Run SSH and Flask app
 CMD ["/bin/bash", "-c", "/usr/sbin/sshd -D & python3 /home/devuser/health_check.py"]
+
