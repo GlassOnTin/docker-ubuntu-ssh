@@ -52,10 +52,11 @@ USER root
 RUN pip3 install Flask
 
 RUN mkdir -p /home/devuser
-WORKDIR /home/devuser
 
 # Copy the health_check script into the image
-COPY ./health_check.py /home/devuser/health_check.py
+COPY health_check.py /home/devuser/health_check.py
+
+RUN ls /home/devuser
 
 # Expose the Flask app port along with SSH port
 EXPOSE 22 3000 4000
