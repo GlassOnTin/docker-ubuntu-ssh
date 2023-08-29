@@ -51,8 +51,8 @@ USER root
 # Install Flask
 RUN pip3 install Flask
 
-# Add a simple Flask app for health checks
-RUN echo 'from flask import Flask\napp = Flask(__name__)\n@app.route("/")\ndef hello():\n    return "OK", 200\nif __name__ == "__main__":\n    app.run(host="0.0.0.0", port=4000)' > /home/devuser/health_check.py
+# Copy the health_check script into the image
+COPY health_check.py /home/devuser/health_check.py
 
 # Expose the Flask app port along with SSH port
 EXPOSE 22 3000 4000
