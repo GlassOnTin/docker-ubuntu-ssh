@@ -51,7 +51,7 @@ USER root
 # Install Flask
 RUN pip3 install Flask
 
-# Set the working directory
+RUN mkdir -p /home/devuser
 WORKDIR /home/devuser
 
 # Copy the health_check script into the image
