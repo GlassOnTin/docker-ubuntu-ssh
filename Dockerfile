@@ -8,7 +8,6 @@ RUN apk add --update --no-cache \
     openssh \
     nodejs \
     npm && \
-    pip install --no-cache-dir flask gunicorn && \
     npm install -g express socket.io winston && \
     addgroup -S appgroup && \
     adduser -S appuser -G appgroup && \
@@ -19,7 +18,7 @@ COPY healthCheck.py /app/
 COPY requirements.txt /app/
 
 # Install Python dependencies
-RUN pip install -r /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Switch to non-root user
 USER appuser
