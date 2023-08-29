@@ -14,7 +14,7 @@ RUN apk add --update --no-cache \
     sed -i 's/#PermitRootLogin/PermitRootLogin/' /etc/ssh/sshd_config
 
 # Copy health check script and requirements
-COPY ./healthCheck.py /app/
+COPY ./health_check.py /app/
 COPY ./requirements.txt /app/
 
 # Install Python dependencies
@@ -28,4 +28,4 @@ EXPOSE 22 3000 4000
 
 # Start SSH daemon and run health check and app
 ENTRYPOINT ["/usr/sbin/sshd", "-D"]
-CMD ["sh", "-c", "python /app/healthCheck.py & python /app/app.py"]
+CMD ["sh", "-c", "python /app/health_check.py & python /app/app.py"]
