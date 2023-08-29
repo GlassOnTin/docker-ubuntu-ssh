@@ -14,8 +14,8 @@ RUN apk add --update --no-cache \
     sed -i 's/#PermitRootLogin/PermitRootLogin/' /etc/ssh/sshd_config
 
 # Copy health check script and requirements
-COPY healthCheck.py /app/
-COPY requirements.txt /app/
+COPY ./healthCheck.py /app/
+COPY ./requirements.txt /app/
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r /app/requirements.txt
