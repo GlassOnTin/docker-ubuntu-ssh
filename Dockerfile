@@ -1,66 +1,32 @@
-FROM ubuntu:latest
-LABEL maintainer="Your Name <your.email@example.com>"
+# Use latest Alpine version
+FROM alpine:latest
 
-# Update package lists and upgrade packages
-RUN apt-get update -y && apt-get upgrade -y
+# Install packages in one RUN command to reduce layers
+RUN apk add --update --no-cache \
+    python3 \
+    py3-pip \
+    openssh \
+    nodejs \
+    npm && \
+    pip install --no-cache-dir flask gunicorn && \
+    npm install -g express socket.io winston && \
+    addgroup -S appgroup && \
+    adduser -S appuser -G appgroup && \
+    sed -i 's/#PermitRootLogin/PermitRootLogin/' /etc/ssh/sshd_config
 
-# Install basic packages
-RUN apt-get install -y sudo curl git-core gnupg 
+# Copy health check script and requirements
+COPY healthCheck.py /app/
+COPY requirements.txt /app/
 
-# Install development tools one by one to isolate issues
-RUN apt-get install -y locales
-RUN apt-get install -y npm
-RUN apt-get install -y nodejs
-RUN apt-get install -y zsh
-RUN apt-get install -y wget
-RUN apt-get install -y nano
-RUN apt-get install -y python3
-RUN apt-get install -y python3-pip
-RUN apt-get install -y openssh-server
-RUN apt-get clean
+# Install Python dependencies
+RUN pip install -r /app/requirements.txt
 
-# Install Python packages
-RUN pip3 install docker Flask celery pyjwt
+# Switch to non-root user
+USER appuser
 
-# Install Node.js packages
-RUN npm install -g express socket.io winston
-
-# Configure locale and add user
-RUN locale-gen en_US.UTF-8 && \
-    adduser --quiet --disabled-password --shell /bin/zsh --home /home/devuser --gecos "User" devuser && \
-    echo "devuser:p@ssword1" | chpasswd &&  usermod -aG sudo devuser
-
-# Set up SSH
-RUN mkdir /var/run/sshd && \
-    sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-    sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-
-# Add custom scripts
-ADD scripts/installthemes.sh /home/devuser/installthemes.sh
-
-# Switch to devuser
-USER devuser
-
-# Set environment variables
-ENV TERM xterm
-ENV ZSH_THEME agnoster
-
-# Reset user to root for SSHD
-USER root
-
-# Install Flask
-RUN pip3 install Flask
-
-RUN mkdir -p /home/devuser
-
-# Copy the health_check script into the image
-COPY health_check.py /home/devuser/health_check.py
-
-RUN ls /home/devuser
-
-# Expose the Flask app port along with SSH port
+# Expose ports
 EXPOSE 22 3000 4000
 
-# Run SSH and Flask app
-CMD ["/bin/bash", "-c", "/usr/sbin/sshd -D & python3 /home/devuser/health_check.py"]
-
+# Start SSH daemon and run health check and app
+ENTRYPOINT ["/usr/sbin/sshd", "-D"]
+CMD ["sh", "-c", "python /app/healthCheck.py & python /app/app.py"]
