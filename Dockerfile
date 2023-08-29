@@ -26,5 +26,7 @@ USER appuser
 # Expose ports
 EXPOSE 22 3000 4000
 
+RUN ssh-keygen -A
+
 # Run SSH daemon, health check, and app as a command
-CMD ["sh", "-c", "/usr/sbin/sshd -D & python /app/healthCheck.py & python /app/app.py"]
+CMD ["sh", "-c", "/usr/sbin/sshd -D & python /app/healthCheck.py"]
